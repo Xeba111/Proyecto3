@@ -23,17 +23,18 @@ public class BlackjackServer extends JFrame
     ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
     ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
     ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
-
     private JTextArea outputArea;
-    private Player[] players;
+    private Player[] players ;
     private ServerSocket server;
     private int currentPlayer;
     private ExecutorService runGame;
     private Lock gameLock;
     private Condition otherPlayerConnected;
     private Condition otherPlayerTurn;
-    private final static int[] numerosJugadores = {1,2,3,4,5,6,7,8,9,10};
+    private final static int[] numerosJugadores = {0,1,2,3,4,5,6,7,8,9};
     private final static String[] numeroJugadoreString = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+    private String[] usedCards = new String[20];
+    private int numberUsed = 0;
 
     public BlackjackServer()
     {
@@ -114,10 +115,35 @@ public class BlackjackServer extends JFrame
         );
     }
 
-    private static String getRandom(String[] array)
+    private boolean validateButton(int player)
+    {
+        while (player != currentPlayer)
+        {
+            gameLock.lock();
+
+            try
+            {
+                otherPlayerTurn.await();
+            }
+            catch (InterruptedException exception)
+            {
+                exception.printStackTrace();
+            }
+            finally
+            {
+                gameLock.unlock();
+            }
+        }
+
+    }
+
+    private static String getRandom(String[] array, String[] used, int numberUsed)
     {
         int random = new Random().nextInt(array.length);
+        used[numberUsed] = array[random];
+        numberUsed += 1;
         return array[random];
+
     }
 
     private class Player implements Runnable
@@ -164,12 +190,12 @@ public class BlackjackServer extends JFrame
 
 //                if(playerNumber == 1 || playerNumber == 2)
 //                {
-                    String carta1 = getRandom(deck);
-                    String carta2 = getRandom(deck);
+                    String carta1 = getRandom(deck, usedCards, numberUsed);
+                    String carta2 = getRandom(deck, usedCards, numberUsed);
 
                     output.format("Recibes la carta: " + carta1 + "\n");
                     output.flush();
-                    output.format(" la carta: " + carta2 + "\n");
+                    output.format("la carta: " + carta2 + "\n");
                     output.flush();
 
                     gameLock.lock();
