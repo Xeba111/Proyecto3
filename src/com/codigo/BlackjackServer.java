@@ -41,7 +41,7 @@ public class BlackjackServer extends JFrame
 
         otherPlayerTurn = gameLock.newCondition();
 
-        players = new Player[];
+        players = new Player[10];
 
         currentPlayer = 0;
 
@@ -58,7 +58,7 @@ public class BlackjackServer extends JFrame
 
         outputArea = new JTextArea();
         add(outputArea, BorderLayout.CENTER);
-        outputArea.setText("Server esperando las conexiones");
+        outputArea.setText("Server esperando las conexiones \n");
 
         this.setSize(300, 300);
         setVisible(true);
@@ -87,7 +87,7 @@ public class BlackjackServer extends JFrame
         try
         {
             players[numerosJugadores[0]].setSuspended(false);
-            otherPlayerConnected.signal();_
+            otherPlayerConnected.signal();
         }
         finally
         {
@@ -135,11 +135,83 @@ public class BlackjackServer extends JFrame
         }
 
         //Muestra mensaje de que otro jugador hizo su jugada
-        public void otherPlayerMoved(int carta)
+        public void otherPlayerMoved(String carta)
         {
-            output.format("El oponente se movió \n");
+            output.format("El oponente obtuvo la carta: \n");
+            output.format("%d\n", carta);
             output.flush();
         }
+
+        public void run()
+        {
+            try
+            {
+                displayMessage("Player " + playerNumber + "conectado\n");
+                output.format("%s\n", playerNumber);
+                output.flush();
+
+                if(playerNumber == 1 || playerNumber == 2)
+                {
+                    output.format("%s\n%s", "Nuevo jugador conectado", "Esperando otro jugador \n");
+                    output.flush();
+
+                    gameLock.lock();
+
+                    try
+                    {
+                        while (suspended)
+                        {
+                            otherPlayerConnected.await();
+                        }
+                    }
+                    catch (InterruptedException exception)
+                    {
+                        exception.printStackTrace();
+                    }
+                    finally
+                    {
+                        gameLock.unlock();
+                    }
+
+                    output.format("Otro jugador se ha conectado. Tu turno: \n");
+                    output.flush();
+                }
+                else
+                {
+                    output.format("Otro jugador se ha conectado. Tu turno\n");
+                    output.flush();
+                }
+//
+//                while(!isGameOver())
+//                {
+//
+//                }
+
+
+
+            }
+            finally
+            {
+                try
+                {
+                    connection.close();
+                }
+                catch(IOException ioException)
+                {
+                    ioException.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }
+
+        public void setSuspended(boolean status)
+        {
+            suspended = status;
+        }
+
+
+
+
 
     }
 
