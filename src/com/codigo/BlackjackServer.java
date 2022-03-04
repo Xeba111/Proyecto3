@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
-import java.util.*;
+import java.util.Formatter;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -17,19 +19,10 @@ import javax.swing.SwingUtilities;
 
 public class BlackjackServer extends JFrame
 {
-
-    private String deck[]= {                                                       // Crea todo el mazo
-            "1","2","3","4","5","6","7","8","9","10","J","Q","K",
-            "1","2","3","4","5","6","7","8","9","10","J","Q","K",
-            "1","2","3","4","5","6","7","8","9","10","J","Q","K",
-            "1","2","3","4","5","6","7","8","9","10","J","Q","K"};
-    List<String> card0= Arrays.asList(deck);                               // Convierte el mazo en una colección
-    List<String> card1 = new ArrayList<>(card0);
-    Random a=new Random();
-    int index=51;
-    double pointP1=0.0,pointP2=0.0;                     // Registra el puntaje de dos jugadores
-    String judge="Si";
-
+    private String[] deck = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
+    ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
+    ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
+    ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
 
     private JTextArea outputArea;
     private Player[] players;
@@ -121,6 +114,12 @@ public class BlackjackServer extends JFrame
         );
     }
 
+    private static String getRandom(String[] array)
+    {
+        int random = new Random().nextInt(array.length);
+        return array[random];
+    }
+
     private class Player implements Runnable
     {
         private Socket connection;
@@ -158,13 +157,19 @@ public class BlackjackServer extends JFrame
         {
             try
             {
-                displayMessage("Player " + playerNumber + "conectado\n");
+                displayMessage("Player " + playerNumber + " conectado\n");
                 output.format("%s\n", playerNumber);
                 output.flush();
 
-                if(playerNumber == 1 || playerNumber == 2)
-                {
-                    output.format("%s\n%s", "Nuevo jugador conectado", "Esperando otro jugador \n");
+
+//                if(playerNumber == 1 || playerNumber == 2)
+//                {
+                    String carta1 = getRandom(deck);
+                    String carta2 = getRandom(deck);
+
+                    output.format("Recibes la carta: " + carta1 + "\n");
+                    output.flush();
+                    output.format(" la carta: " + carta2 + "\n");
                     output.flush();
 
                     gameLock.lock();
@@ -187,12 +192,7 @@ public class BlackjackServer extends JFrame
 
                     output.format("Otro jugador se ha conectado. Tu turno: \n");
                     output.flush();
-                }
-                else
-                {
-                    output.format("Otro jugador se ha conectado. Tu turno\n");
-                    output.flush();
-                }
+                //}
 //
 //                while(!isGameOver())
 //                {
