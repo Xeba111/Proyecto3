@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -24,6 +25,9 @@ import java.util.concurrent.ExecutorService;
 
 public class BlackjackClient extends JFrame implements Runnable
 {
+    private JButton pasar;
+    private JButton pedir;
+    private JPanel botones;
     private JTextField numeroJugador;
     private JTextArea display; //Muestra las cartas
     private Socket connection; //Coneccion al servidor
@@ -32,6 +36,8 @@ public class BlackjackClient extends JFrame implements Runnable
     private String blackjackHost; //nombre para el servidor host
     private String numero; //numero de este jugador
     private boolean myTurn; //determina de quién es el turno
+    private final static int[] numerosJugadores = {1,2,3,4,5,6,7,8,9,10};
+    private String[] deck = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
 
     public BlackjackClient(String host)
     {
@@ -40,10 +46,26 @@ public class BlackjackClient extends JFrame implements Runnable
         display.setEditable(false);
         add(new JScrollPane(display), BorderLayout.SOUTH);
 
+        botones = new JPanel();
+
+        pasar = new JButton("Pasar");
+        pedir = new JButton("Pedir");
+
+        botones.add(pasar);
+        botones.add(pedir);
+        pasar.setEnabled(true);
+        pedir.setEnabled(true);
+
+        add(botones, BorderLayout.CENTER);
+
+        pasar.setEnabled(true);
+        pedir.setEnabled(true);
 
         numeroJugador = new JTextField();
         numeroJugador.setEditable(false);
         add(numeroJugador, BorderLayout.NORTH);
+
+
 
         this.setSize(300,300);
         setVisible(true);
@@ -58,7 +80,7 @@ public class BlackjackClient extends JFrame implements Runnable
         try
         {
             //Coneccion al server
-            connection = new Socket(InetAddress.getByName(blackjackHost), 12345);
+            connection = new Socket(InetAddress.getByName(blackjackHost), 8008);
 
             //Streams de input y output
             input = new Scanner(connection.getInputStream());
@@ -78,18 +100,67 @@ public class BlackjackClient extends JFrame implements Runnable
     //Thread de control que permite el update del TextArea
     public void run()
     {
-        numero = input.nextLine();
+        numero = input.nextLine() ;
+        String carta1 = input.nextLine();
+        String carta2 = input.nextLine();
 
         SwingUtilities.invokeLater(
                 new Runnable() {
                     @Override
                     public void run()
                     {
-                        numeroJugador.setText("Eres el jugador \"" + numero + "\"");
+                        numeroJugador.setText("Eres el jugador \n" + numero + "\n");
+                        display.setText(carta1 + " y " + carta2 + "\n");
                     }
                 }
         );
 
+        myTurn = (numero.equals(String.valueOf(numerosJugadores[Integer.parseInt(numero)])));
+
+        while(true)
+        {
+            if(input.hasNextLine())
+                processMessage(input.nextLine());
+        }
     }
+
+    private void processMessage(String message)
+    {
+        if(message.equals("Recibes una carta "))
+        {
+            displayMessage("Carta valida: \n");
+            myTurn = true;
+        }
+        else if(message.equals("Te retiras del juego."))
+        {
+            displayMessage("Te retiras del juego. \n");
+        }
+
+    }
+
+
+    private void displayMessage(final String messageToDisplay)
+    {
+        SwingUtilities.invokeLater(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        display.append(messageToDisplay);
+                    }
+                }
+        );
+    }
+//
+//    private void setCarta(final String carta)
+//    {
+//        SwingUtilities.invokeLater(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        display.
+//                    }
+//                }
+//        );
+//    }
 
 }
