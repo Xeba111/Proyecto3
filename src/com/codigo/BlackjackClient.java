@@ -90,7 +90,6 @@ public class BlackjackClient extends JFrame implements Runnable
                 }
         );
 
-        myTurn = (numero.equals)
     }
 
 }
