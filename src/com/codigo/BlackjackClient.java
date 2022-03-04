@@ -58,7 +58,7 @@ public class BlackjackClient extends JFrame implements Runnable
         try
         {
             //Coneccion al server
-            connection = new Socket(InetAddress.getByName(blackjackHost), 12345);
+            connection = new Socket(InetAddress.getByName(blackjackHost), 8008);
 
             //Streams de input y output
             input = new Scanner(connection.getInputStream());

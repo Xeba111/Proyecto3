@@ -47,7 +47,7 @@ public class BlackjackServer extends JFrame
 
         try
         {
-            server = new ServerSocket(12345);
+            server = new ServerSocket(8008);
 
         }
         catch (IOException ioException)
