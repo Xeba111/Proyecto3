@@ -4,8 +4,7 @@ import java.awt.BorderLayout;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
-import java.util.Formatter;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -18,7 +17,20 @@ import javax.swing.SwingUtilities;
 
 public class BlackjackServer extends JFrame
 {
-    private String[] deck = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+
+    private String deck[]= {                                                       // Crea todo el mazo
+            "1","2","3","4","5","6","7","8","9","10","J","Q","K",
+            "1","2","3","4","5","6","7","8","9","10","J","Q","K",
+            "1","2","3","4","5","6","7","8","9","10","J","Q","K",
+            "1","2","3","4","5","6","7","8","9","10","J","Q","K"};
+    List<String> card0= Arrays.asList(deck);                               // Convierte el mazo en una colección
+    List<String> card1 = new ArrayList<>(card0);
+    Random a=new Random();
+    int index=51;
+    double pointP1=0.0,pointP2=0.0;                     // Registra el puntaje de dos jugadores
+    String judge="Si";
+
+
     private JTextArea outputArea;
     private Player[] players;
     private ServerSocket server;
