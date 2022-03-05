@@ -19,5 +19,6 @@ public class BlackjackClientTest
 
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
     }
 }

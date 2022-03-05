@@ -23,17 +23,19 @@ public class BlackjackServer extends JFrame
     ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
     ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
     ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
-
     private JTextArea outputArea;
-    private Player[] players;
+    private JTextArea cartasArea;
+    private Player[] players ;
     private ServerSocket server;
     private int currentPlayer;
     private ExecutorService runGame;
     private Lock gameLock;
     private Condition otherPlayerConnected;
     private Condition otherPlayerTurn;
-    private final static int[] numerosJugadores = {1,2,3,4,5,6,7,8,9,10};
+    private final static int[] numerosJugadores = {0,1,2,3,4,5,6,7,8,9};
     private final static String[] numeroJugadoreString = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+    private String[] usedCards = new String[20];
+    private int numberUsed = 0;
 
     public BlackjackServer()
     {
@@ -61,11 +63,19 @@ public class BlackjackServer extends JFrame
             System.exit(1);
         }
 
+        //En la parte de abajo
         outputArea = new JTextArea();
-        add(outputArea, BorderLayout.CENTER);
-        outputArea.setText("Server esperando las conexiones \n");
+        add(outputArea, BorderLayout.SOUTH);
+        outputArea.setSize(400, 200);
+        outputArea.setText("Server esperando las conexiones. \n");
 
-        this.setSize(300, 300);
+        //En la parte de arriba
+        cartasArea = new JTextArea();
+        add(cartasArea, BorderLayout.NORTH);
+        cartasArea.setSize(400, 200);
+        cartasArea.setText("Aquí se mostrará el estado de los jugadores: \n");
+
+        this.setSize(400, 400);
         setVisible(true);
 
     }
@@ -114,10 +124,13 @@ public class BlackjackServer extends JFrame
         );
     }
 
-    private static String getRandom(String[] array)
+    private static String getRandom(String[] array, String[] used, int numberUsed)
     {
         int random = new Random().nextInt(array.length);
+        used[numberUsed] = array[random];
+        numberUsed += 1;
         return array[random];
+
     }
 
     private class Player implements Runnable
@@ -157,20 +170,21 @@ public class BlackjackServer extends JFrame
         {
             try
             {
-                displayMessage("Player " + playerNumber + " conectado\n");
+                displayMessage("Player " + playerNumber + " conectado SERVER\n");
                 output.format("%s\n", playerNumber);
                 output.flush();
 
-
 //                if(playerNumber == 1 || playerNumber == 2)
 //                {
-                    String carta1 = getRandom(deck);
-                    String carta2 = getRandom(deck);
+                    String carta1 = getRandom(deck, usedCards, numberUsed);
+                    String carta2 = getRandom(deck, usedCards, numberUsed);
 
                     output.format("Recibes la carta: " + carta1 + "\n");
                     output.flush();
-                    output.format(" la carta: " + carta2 + "\n");
+                    output.format("la carta: " + carta2 + "\n");
                     output.flush();
+
+                    cartasArea.append("El jugador " + playerNumber + " recibe la carta: " + carta1 + " y la carta " + carta2 + ".\n");
 
                     gameLock.lock();
 
@@ -199,8 +213,6 @@ public class BlackjackServer extends JFrame
 //
 //                }
 
-
-
             }
             finally
             {
@@ -213,6 +225,11 @@ public class BlackjackServer extends JFrame
                     ioException.printStackTrace();
                     System.exit(1);
                 }
+            }
+
+            if (connection.isConnected())
+            {
+                outputArea.append("El jugador " + playerNumber + " se ha retirado. \n");
             }
         }
 

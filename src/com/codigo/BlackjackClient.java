@@ -43,6 +43,7 @@ public class BlackjackClient extends JFrame implements Runnable
     {
         blackjackHost = host;
         display = new JTextArea(4,30);
+
         display.setEditable(false);
         add(new JScrollPane(display), BorderLayout.SOUTH);
 
