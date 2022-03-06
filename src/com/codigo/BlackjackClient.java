@@ -24,8 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 
-public class BlackjackClient extends JFrame implements Runnable
-{
+public class BlackjackClient extends JFrame implements Runnable {
 
     private JButton pedir;
     private JButton apostar;
@@ -40,13 +39,12 @@ public class BlackjackClient extends JFrame implements Runnable
     private String blackjackHost; //nombre para el servidor host
     private String numero; //numero de este jugador
     private boolean myTurn; //determina de quién es el turno
-    private final static int[] numerosJugadores = {1,2,3,4,5,6,7,8,9,10};
+    private final static int[] numerosJugadores = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 
-    public BlackjackClient(String host)
-    {
+    public BlackjackClient(String host) {
         blackjackHost = host;
-        display = new JTextArea(4,30);
+        display = new JTextArea(4, 30);
 
         display.setEditable(false);
         add(new JScrollPane(display), BorderLayout.SOUTH);
@@ -59,10 +57,10 @@ public class BlackjackClient extends JFrame implements Runnable
         apostar = new JButton("Apostar");
         retirarse = new JButton("Retirarse");
 
-        botones.add(pedir);
-        botones.add(reiniciar);
         botones.add(apostar);
+        botones.add(pedir);
         botones.add(retirarse);
+        botones.add(reiniciar);
 
         pedir.setEnabled(true);
         retirarse.setEnabled(true);
@@ -71,18 +69,16 @@ public class BlackjackClient extends JFrame implements Runnable
         add(botones, BorderLayout.CENTER);
 
 
-        pedir.setEnabled(true);
-        retirarse.setEnabled(true);
-        apostar.setEnabled(true);
-        reiniciar.setEnabled(true);
-
         numeroJugador = new JTextField();
         numeroJugador.setEditable(false);
         add(numeroJugador, BorderLayout.NORTH);
 
+        pedir.addActionListener(new pedirfuncion());
+        retirarse.addActionListener(new retirarsefuncion());
+        apostar.addActionListener(new apostarfuncion());
+        reiniciar.addActionListener(new reiniciarfuncion());
 
-
-        this.setSize(300,300);
+        this.setSize(300, 300);
         setVisible(true);
 
         startClient();
@@ -90,19 +86,15 @@ public class BlackjackClient extends JFrame implements Runnable
     }
 
     //Inicializar el thread
-    public void startClient()
-    {
-        try
-        {
+    public void startClient() {
+        try {
             //Coneccion al server
             connection = new Socket(InetAddress.getByName(blackjackHost), 8008);
 
             //Streams de input y output
             input = new Scanner(connection.getInputStream());
             output = new Formatter(connection.getOutputStream());
-        }
-        catch (IOException ioException)
-        {
+        } catch (IOException ioException) {
             ioException.printStackTrace();
         }
 
@@ -113,36 +105,34 @@ public class BlackjackClient extends JFrame implements Runnable
     }
 
     //Thread de control que permite el update del TextArea
-    public void run()
-    {
-        numero = input.nextLine() ;
+    public void run() {
+        numero = input.nextLine();
 
-        String cartas= input.nextLine();
+        String cartas = input.nextLine();
         SwingUtilities.invokeLater(
                 new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
 
                         numeroJugador.setText("Eres el jugador \n" + numero + "\n");
-                        display.setText(cartas  + "\n");
-                        pedir.addActionListener(new ActionListener(){
+                        display.setText(cartas + "\n");
+                        pedir.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                Deck d= new Deck();
+                                Deck d = new Deck();
 
                                 Hand handHuman = new Hand();
 
                                 handHuman.addCard(d.getCard());
 
-                                display.setText(cartas  + "\n");
+                                display.setText(cartas + "\n");
                                 System.out.println(cartas);
-                                if(handHuman.getValue()  == 21){
-                                    display.setText("Ganaste esta partida"  + "\n");
+                                if (handHuman.getValue() == 21) {
+                                    display.setText("Ganaste esta partida" + "\n");
                                     // aqui iria la sumatoria de lo que gana la apuesta
                                 }
-                                if (handHuman.getValue()>21){
-                                    display.setText("Perdiste esta partida"  + "\n");
+                                if (handHuman.getValue() > 21) {
+                                    display.setText("Perdiste esta partida" + "\n");
                                     // cosa de apuestas
                                 }
 
@@ -157,30 +147,24 @@ public class BlackjackClient extends JFrame implements Runnable
 
         myTurn = (numero.equals(String.valueOf(numerosJugadores[Integer.parseInt(numero)])));
 
-        while(true)
-        {
-            if(input.hasNextLine())
+        while (true) {
+            if (input.hasNextLine())
                 processMessage(input.nextLine());
         }
     }
 
-    private void processMessage(String message)
-    {
-        if(message.equals("Recibes una carta "))
-        {
+    private void processMessage(String message) {
+        if (message.equals("Recibes una carta ")) {
             displayMessage("Carta valida: \n");
             myTurn = true;
-        }
-        else if(message.equals("Te retiras del juego."))
-        {
+        } else if (message.equals("Te retiras del juego.")) {
             displayMessage("Te retiras del juego. \n");
         }
 
     }
 
 
-    private void displayMessage(final String messageToDisplay)
-    {
+    private void displayMessage(final String messageToDisplay) {
         SwingUtilities.invokeLater(
                 new Runnable() {
                     @Override
@@ -190,19 +174,37 @@ public class BlackjackClient extends JFrame implements Runnable
                 }
         );
     }
-
-
-//
-//    private void setCarta(final String carta)
-//    {
-//        SwingUtilities.invokeLater(
-//                new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        display.
-//                    }
-//                }
-//        );
-//    }
-
 }
+
+    class reiniciarfuncion implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+
+        }
+    }
+
+    class pedirfuncion implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+
+        }
+    }
+
+    class apostarfuncion implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+
+        }
+    }
+
+    class retirarsefuncion implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+
+        }
+    }
+
