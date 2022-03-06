@@ -176,15 +176,16 @@ public class BlackjackServer extends JFrame
 
 //                if(playerNumber == 1 || playerNumber == 2)
 //                {
-                    String carta1 = getRandom(deck, usedCards, numberUsed);
-                    String carta2 = getRandom(deck, usedCards, numberUsed);
+                Deck d= new Deck();
+                d.createCards();
+                Hand handHuman = new Hand();
 
-                    output.format("Recibes la carta: " + carta1 + "\n");
+                handHuman.addCard(d.getCard());
+                handHuman.addCard(d.getCard());
+                String cartas= handHuman.toString();
+                output.format("Recibes las cartas: " + cartas + "\n");
                     output.flush();
-                    output.format("la carta: " + carta2 + "\n");
-                    output.flush();
-
-                    cartasArea.append("El jugador " + playerNumber + " recibe la carta: " + carta1 + " y la carta " + carta2 + ".\n");
+                    cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+".\n");
 
                     gameLock.lock();
 

@@ -1,6 +1,7 @@
 package com.codigo;
 
 import java.awt.BorderLayout;
+import java.awt.event.*;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -25,8 +26,11 @@ import java.util.concurrent.ExecutorService;
 
 public class BlackjackClient extends JFrame implements Runnable
 {
-    private JButton pasar;
+
     private JButton pedir;
+    private JButton apostar;
+    private JButton retirarse;
+    private JButton reiniciar;
     private JPanel botones;
     private JTextField numeroJugador;
     private JTextArea display; //Muestra las cartas
@@ -37,7 +41,7 @@ public class BlackjackClient extends JFrame implements Runnable
     private String numero; //numero de este jugador
     private boolean myTurn; //determina de quién es el turno
     private final static int[] numerosJugadores = {1,2,3,4,5,6,7,8,9,10};
-    private String[] deck = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+
 
     public BlackjackClient(String host)
     {
@@ -49,18 +53,28 @@ public class BlackjackClient extends JFrame implements Runnable
 
         botones = new JPanel();
 
-        pasar = new JButton("Pasar");
+
         pedir = new JButton("Pedir");
+        reiniciar = new JButton("Reiniciar");
+        apostar = new JButton("Apostar");
+        retirarse = new JButton("Retirarse");
 
-        botones.add(pasar);
         botones.add(pedir);
-        pasar.setEnabled(true);
-        pedir.setEnabled(true);
+        botones.add(reiniciar);
+        botones.add(apostar);
+        botones.add(retirarse);
 
+        pedir.setEnabled(true);
+        retirarse.setEnabled(true);
+        apostar.setEnabled(true);
+        reiniciar.setEnabled(true);
         add(botones, BorderLayout.CENTER);
 
-        pasar.setEnabled(true);
+
         pedir.setEnabled(true);
+        retirarse.setEnabled(true);
+        apostar.setEnabled(true);
+        reiniciar.setEnabled(true);
 
         numeroJugador = new JTextField();
         numeroJugador.setEditable(false);
@@ -102,16 +116,41 @@ public class BlackjackClient extends JFrame implements Runnable
     public void run()
     {
         numero = input.nextLine() ;
-        String carta1 = input.nextLine();
-        String carta2 = input.nextLine();
 
+        String cartas= input.nextLine();
         SwingUtilities.invokeLater(
                 new Runnable() {
                     @Override
                     public void run()
                     {
+
                         numeroJugador.setText("Eres el jugador \n" + numero + "\n");
-                        display.setText(carta1 + " y " + carta2 + "\n");
+                        display.setText(cartas  + "\n");
+                        pedir.addActionListener(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                Deck d= new Deck();
+
+                                Hand handHuman = new Hand();
+
+                                handHuman.addCard(d.getCard());
+
+                                display.setText(cartas  + "\n");
+                                System.out.println(cartas);
+                                if(handHuman.getValue()  == 21){
+                                    display.setText("Ganaste esta partida"  + "\n");
+                                    // aqui iria la sumatoria de lo que gana la apuesta
+                                }
+                                if (handHuman.getValue()>21){
+                                    display.setText("Perdiste esta partida"  + "\n");
+                                    // cosa de apuestas
+                                }
+
+
+                            }
+                        });
+
+
                     }
                 }
         );
@@ -151,6 +190,8 @@ public class BlackjackClient extends JFrame implements Runnable
                 }
         );
     }
+
+
 //
 //    private void setCarta(final String carta)
 //    {
