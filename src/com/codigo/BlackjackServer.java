@@ -129,7 +129,8 @@ public class BlackjackServer extends JFrame
         private Formatter output;
         private int playerNumber; //Trackea qué jugador es
         private boolean suspended = true; //Si el thread está suspendido o no
-        private int perder;
+        private int apuesta;
+
 
         public Player(Socket socket, int number)
         {
@@ -172,7 +173,6 @@ public class BlackjackServer extends JFrame
                 while (true)
                     {
                         accionBoton = input.nextInt();
-                        String limpiar = input.nextLine();
 
                         if (accionBoton == 1)
                         {
@@ -191,23 +191,6 @@ public class BlackjackServer extends JFrame
                             output.format("%d\n", valorVerificacion);
                             output.flush();
 
-//                            if (valorVerificacion > 21)
-//                            {
-//                                perder = 1;
-//                                output.format("%d\n", perder);
-//                                output.flush();
-//                            }
-//                            else
-//                            {
-//                                perder = 0;
-//                                output.format("%d\n", perder);
-//                                output.flush();
-//                                continue;
-//                            }
-
-//                            output.format("%d\n", valorVerificacion);
-//                            output.flush();
-
                             cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+"\n");
 
                             accionBoton = 0;
@@ -215,7 +198,44 @@ public class BlackjackServer extends JFrame
 
                         if(accionBoton == 2)
                         {
-                            cartasArea.append("El jugador número " + playerNumber + " se ha retirado"+".\n");
+                            int valorHumano = handHuman.getValue();
+                            int valorServer = handServer.getValue();
+                            cartasArea.append("El jugador número " + playerNumber + " tiene un valor de " + valorHumano +".\n");
+                            while (valorHumano > valorServer)
+                            {
+                                if(valorServer < 15)
+                                {
+                                    handServer.addCard(d.getCard());
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                valorServer = handServer.getValue();
+                            }
+
+                            valorServer = handServer.getValue();
+
+                            cartasArea.append("El servidor tiene las cartas: " + handServer.toString()+"\n");
+                            cartasArea.append("Con un valor de " + handServer.getValue() + "\n");
+
+                            if(valorServer > 21)
+                            {
+                                cartasArea.append("La casa pierde por BUST!\n");
+                                cartasArea.append("El jugador número " + playerNumber + " ha ganado un total de " + apuesta);
+                            }
+                            else if(valorHumano > 21 && valorServer < 21)
+                            {
+                                cartasArea.append("El jugador número " + playerNumber + " pierde por BUST!\n");
+                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta);
+                            }
+                            else if(valorServer > valorHumano)
+                            {
+                                cartasArea.append("El jugador número " + playerNumber + " pierde ante el server!\n");
+                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta);
+                            }
+
+
                             accionBoton = 0;
                         }
                         if(accionBoton == 3)
@@ -226,6 +246,8 @@ public class BlackjackServer extends JFrame
                         }
                         if(accionBoton == 4)
                         {
+                            apuesta = input.nextInt();
+                            String limpiar = input.nextLine();
 
                             accionBoton = 0;
 

@@ -32,6 +32,7 @@ public class BlackjackClient extends JFrame implements Runnable {
     private JButton reiniciar;
     private JPanel botones;
     private JTextArea numeroJugador;
+    private JTextField apuestas;
     private JTextArea display; //Muestra las cartas
     private Socket connection; //Coneccion al servidor
     private Scanner input; //Input del servidor
@@ -40,6 +41,7 @@ public class BlackjackClient extends JFrame implements Runnable {
     private String numero; //numero de este jugador
     private final static int[] numerosJugadores = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int decision = 0;
+    boolean apostado = false;
 
     public BlackjackClient(String host) {
         blackjackHost = host;
@@ -48,22 +50,23 @@ public class BlackjackClient extends JFrame implements Runnable {
         add(new JScrollPane(display), BorderLayout.SOUTH);
 
         botones = new JPanel();
-
-
+        apuestas = new JTextField("Ingresa la apuesta");
         pedir = new JButton("Pedir");
         reiniciar = new JButton("Salir");
         apostar = new JButton("Apostar");
-        retirarse = new JButton("Dejar de pedir");
+        retirarse = new JButton("Dejar");
 
         botones.add(apostar);
         botones.add(pedir);
         botones.add(retirarse);
         botones.add(reiniciar);
+        botones.add(apuestas);
 
         pedir.setEnabled(true);
         retirarse.setEnabled(true);
         apostar.setEnabled(true);
         reiniciar.setEnabled(true);
+        apuestas.setEnabled(true);
         add(botones, BorderLayout.CENTER);
 
 
@@ -73,7 +76,7 @@ public class BlackjackClient extends JFrame implements Runnable {
 
 
         //display.setSize(300,200);
-        this.setSize(400, 500);
+        this.setSize(500, 400);
         setVisible(true);
 
 
@@ -115,47 +118,40 @@ public class BlackjackClient extends JFrame implements Runnable {
                 String actualizacionCartas;
                 String valorCartas;
                 int valorCartasInt;
+                int anuncio;
 
-                decision = 1;
-                output.format("%d\n", decision);
-                output.flush();
+                if (apostado) {
 
-                actualizacionCartas = input.nextLine();
 
-                display.append(actualizacionCartas + "\n");
+                    decision = 1;
+                    output.format("%d\n", decision);
+                    output.flush();
 
-                valorCartas = input.nextLine();
+                    actualizacionCartas = input.nextLine();
 
-                display.append(valorCartas + "\n");
+                    display.append(actualizacionCartas + "\n");
 
-                valorCartasInt = input.nextInt();
+                    valorCartas = input.nextLine();
 
-                String limpiar = input.nextLine();
+                    display.append(valorCartas + "\n");
 
-                if (valorCartasInt > 21)
-                {
-                     apostar.setEnabled(false);
-                     pedir.setEnabled(false);
-                     retirarse.setEnabled(false);
-                     display.append("PERDISTE! \n");
+                    valorCartasInt = input.nextInt();
+                    String limpiar = input.nextLine();
 
+                    if (valorCartasInt > 21) {
+                        apostar.setEnabled(false);
+                        pedir.setEnabled(false);
+                        retirarse.setEnabled(false);
+                        display.append("PERDISTE! \n");
+                        anuncio = 1;
+                    }
+
+                    decision = 0;
                 }
-
-//                if (perder == 1)
-//                {
-//                     apostar.setEnabled(false);
-//                     pedir.setEnabled(false);
-//                     retirarse.setEnabled(false);
-//                     System.out.println("YA PERDIO");
-//                     display.append("PERDISTE! \n");
-//                }
-//                else
-//                {
-//                    display.append("\n");
-//                }
-//
-//                input.reset();
-                decision = 0;
+                else if (!apostado)
+                {
+                    display.append("TIENE QUE HACER UNA APUESTA ANTES \n");
+                }
             }
         });
 
@@ -166,6 +162,9 @@ public class BlackjackClient extends JFrame implements Runnable {
                 decision = 2;
                 output.format("%d\n", decision);
                 output.flush();
+
+
+
                 decision = 0;
             }
         });
@@ -186,6 +185,18 @@ public class BlackjackClient extends JFrame implements Runnable {
                 decision = 4;
                 output.format("%d\n", decision);
                 output.flush();
+
+                apostado = true;
+
+                //ASUMIMOS QUE SIEMPRE SEA NUMEROS
+                String apuesta = apuestas.getText();
+                int apuestaInt = Integer.parseInt(apuesta);
+
+                display.append("La apuesta es de " + apuestaInt + "\n");
+
+                output.format("%d\n", apuestaInt);
+                output.flush();
+
                 decision = 0;
 
             }
