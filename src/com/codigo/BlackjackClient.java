@@ -22,6 +22,8 @@ import java.util.Formatter;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.awt.event.*;
+import javax.swing.*;
 
 
 public class BlackjackClient extends JFrame implements Runnable {
@@ -31,7 +33,9 @@ public class BlackjackClient extends JFrame implements Runnable {
     private JButton retirarse;
     private JButton reiniciar;
     private JPanel botones;
+    private JPanel botones1;
     private JTextField numeroJugador;
+    private JTextField jtextfield;
     private JTextArea display; //Muestra las cartas
     private Socket connection; //Coneccion al servidor
     private Scanner input; //Input del servidor
@@ -42,12 +46,24 @@ public class BlackjackClient extends JFrame implements Runnable {
     int decision = 0;
 
 
+
+
+
+
+
     public BlackjackClient(String host) {
+
+        botones1= new JPanel();
         blackjackHost = host;
         display = new JTextArea(4, 30);
+        JTextField jtextfield = new JTextField();
 
+        jtextfield.setText("Inserte su apuesta");
+        jtextfield.setEditable(true);
+        jtextfield.setHorizontalAlignment(JTextField.LEFT);
         display.setEditable(false);
         add(new JScrollPane(display), BorderLayout.SOUTH);
+
 
         botones = new JPanel();
 
@@ -56,7 +72,7 @@ public class BlackjackClient extends JFrame implements Runnable {
         reiniciar = new JButton("Reiniciar");
         apostar = new JButton("Apostar");
         retirarse = new JButton("Retirarse");
-
+        botones.add(jtextfield, null);
         botones.add(apostar);
         botones.add(pedir);
         botones.add(retirarse);
@@ -66,13 +82,15 @@ public class BlackjackClient extends JFrame implements Runnable {
         retirarse.setEnabled(true);
         apostar.setEnabled(true);
         reiniciar.setEnabled(true);
+
+
         add(botones, BorderLayout.CENTER);
+
 
 
         numeroJugador = new JTextField();
         numeroJugador.setEditable(false);
         add(numeroJugador, BorderLayout.NORTH);
-
 
 
 
@@ -156,6 +174,25 @@ public class BlackjackClient extends JFrame implements Runnable {
             }
         });
 
+        apostar.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String valor= jtextfield.getText();
+
+
+                decision = 3;
+                output.format("%d\n", decision);
+                output.flush();
+               // if ()
+               // a = input.nextLine();
+
+                display.append("Valor a apostar"+valor + "\n");
+                decision = 0;
+
+            }
+        });
+
 
 //        while (true)
 //        {
@@ -208,23 +245,10 @@ public class BlackjackClient extends JFrame implements Runnable {
     }
 }
 
-    class reiniciarfuncion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-
-        }
-    }
 
 
 
-    class apostarfuncion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
 
-
-        }
-    }
 
 
 

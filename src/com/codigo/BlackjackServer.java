@@ -203,6 +203,11 @@ public class BlackjackServer extends JFrame
                             cartasArea.append("El jugador número " + playerNumber + " se ha retirado"+".\n");
                             accionBoton = 0;
                         }
+                        if(accionBoton == 4)
+                        {
+                            cartasArea.append("El jugador número " + playerNumber + "ha apostado"+".\n");
+                            accionBoton = 0;
+                        }
 
 
                     }
