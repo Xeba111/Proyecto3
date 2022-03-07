@@ -173,21 +173,21 @@ public class BlackjackServer extends JFrame
 
                 String cartas= handHuman.toString();
                 output.format("Recibes las cartas: " + cartas + "\n");
-                    output.flush();
-                    cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+".\n");
+                output.flush();
+                cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+".\n");
 
-
-                    while (true)
+                while (true)
                     {
                         accionBoton = input.nextInt();
 
                         if (accionBoton == 1)
                         {
                             handHuman.addCard(d.getCard());
-                            cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
-                            cartas = handHuman.toString();
-                            output.format("Recibes las cartas: " + cartas + "\n");
+
+                            String cartasActualizacion = handHuman.toString();
+                            output.format("Ahora tienes las cartas: " + cartasActualizacion + "\n");
                             output.flush();
+                            cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
                         }
                     }
 
