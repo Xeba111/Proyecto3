@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
 import javax.swing.*;
 
 
@@ -24,10 +23,6 @@ public class BlackjackServer extends JFrame
     private ServerSocket server;
     private ExecutorService runGame;
     private Lock gameLock;
-    private final static int[] numerosJugadores = {0,1,2,3,4,5,6,7,8,9};
-    private final static String[] numeroJugadoreString = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-    private String[] usedCards = new String[20];
-    private int numberUsed = 0;
     Hand handServer = new Hand();
     Deck d= new Deck();
 
@@ -247,6 +242,11 @@ public class BlackjackServer extends JFrame
                             {
                                 cartasArea.append("El jugador número " + playerNumber + " pierde ante el server!\n");
                                 cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta + "\n");
+                            }
+                            else if(valorHumano > valorServer)
+                            {
+                                cartasArea.append("El jugador número " + playerNumber + " gana ante el server!\n");
+                                cartasArea.append("El jugador número " + playerNumber + " ha ganado un total de " + apuesta + "\n");
                             }
 
 

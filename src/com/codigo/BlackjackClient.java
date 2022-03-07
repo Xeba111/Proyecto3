@@ -2,11 +2,6 @@ package com.codigo;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.io.IOException;
@@ -39,9 +34,11 @@ public class BlackjackClient extends JFrame implements Runnable {
     private Formatter output; //output para el servidor
     private String blackjackHost; //nombre para el servidor host
     private String numero; //numero de este jugador
-    private final static int[] numerosJugadores = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int decision = 0;
     boolean apostado = false;
+    int dinero = 500;
+    int apuestaInt;
+
 
     public BlackjackClient(String host) {
         blackjackHost = host;
@@ -146,6 +143,8 @@ public class BlackjackClient extends JFrame implements Runnable {
                         anuncio = 1;
                         output.format("%d\n", anuncio);
                         output.flush();
+                        dinero = dinero - apuestaInt;
+                        display.append("El jugador ahora tiene " + dinero + " de dinero. \n");
                     }
                     else
                     {
@@ -167,9 +166,16 @@ public class BlackjackClient extends JFrame implements Runnable {
         retirarse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                decision = 2;
-                output.format("%d\n", decision);
-                output.flush();
+                if (apostado)
+                {
+                    decision = 2;
+                    output.format("%d\n", decision);
+                    output.flush();
+                }
+                else if (!apostado)
+                {
+                    display.append("TIENE QUE HACER UNA APUESTA ANTES \n");
+                }
 
 
 
@@ -198,7 +204,7 @@ public class BlackjackClient extends JFrame implements Runnable {
 
                 //ASUMIMOS QUE SIEMPRE SEA NUMEROS
                 String apuesta = apuestas.getText();
-                int apuestaInt = Integer.parseInt(apuesta);
+                apuestaInt = Integer.parseInt(apuesta);
 
                 display.append("La apuesta es de " + apuestaInt + "\n");
 
@@ -212,17 +218,5 @@ public class BlackjackClient extends JFrame implements Runnable {
     }
 }
 
-
-//    private void displayMessage(final String messageToDisplay) {
-//        SwingUtilities.invokeLater(
-//                new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        display.append(messageToDisplay);
-//                    }
-//                }
-//        );
-//    }
-//}
 
 
