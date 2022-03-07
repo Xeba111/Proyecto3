@@ -12,9 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 
 public class BlackjackServer extends JFrame
@@ -30,6 +28,8 @@ public class BlackjackServer extends JFrame
     private final static String[] numeroJugadoreString = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     private String[] usedCards = new String[20];
     private int numberUsed = 0;
+    Hand handServer = new Hand();
+    Deck d= new Deck();
 
     public BlackjackServer()
     {
@@ -51,19 +51,28 @@ public class BlackjackServer extends JFrame
         }
 
         //En la parte de abajo
-        outputArea = new JTextArea();
-        add(outputArea, BorderLayout.SOUTH);
-        outputArea.setSize(400, 200);
-        outputArea.setText("Server esperando las conexiones. \n");
+        outputArea = new JTextArea(10,10);
+        add(new JScrollPane(outputArea), BorderLayout.SOUTH);
+        //outputArea.setSize(400, 200);
+        outputArea.append("Server esperando las conexiones. \n");
+        outputArea.setEditable(false);
 
         //En la parte de arriba
-        cartasArea = new JTextArea();
-        add(cartasArea, BorderLayout.NORTH);
-        cartasArea.setSize(400, 200);
+        cartasArea = new JTextArea(15,10);
+        add(new JScrollPane(cartasArea), BorderLayout.NORTH);
+        //cartasArea.setSize(400, 200);
         cartasArea.setText("Aquí se mostrará el estado de los jugadores: \n");
+        cartasArea.setEditable(false);
 
-        this.setSize(400, 400);
+        this.setSize(500, 500);
         setVisible(true);
+
+        d.createCards();
+        handServer.addCard(d.getCard());
+        handServer.addCard(d.getCard());
+
+        cartasArea.append("El servidor recibe las cartas recibe las cartas: " + handServer.toString()+"\n");
+        cartasArea.append("Con un valor de " + handServer.getValue() + "\n");
 
     }
 
@@ -113,12 +122,14 @@ public class BlackjackServer extends JFrame
 
     private class Player implements Runnable
     {
+
         private int accionBoton = 0;
         private Socket connection;
         private Scanner input;
         private Formatter output;
         private int playerNumber; //Trackea qué jugador es
         private boolean suspended = true; //Si el thread está suspendido o no
+        private int perder;
 
         public Player(Socket socket, int number)
         {
@@ -137,58 +148,68 @@ public class BlackjackServer extends JFrame
             }
         }
 
-
-
         public void run()
         {
             try
             {
-                displayMessage("Player " + playerNumber + " conectado SERVER\n");
+                outputArea.append("Player " + playerNumber + " conectado SERVER\n");
                 output.format("%s\n", playerNumber);
                 output.flush();
 
-                Deck d= new Deck();
-                d.createCards();
+
                 Hand handHuman = new Hand();
 
                 handHuman.addCard(d.getCard());
                 handHuman.addCard(d.getCard());
 
-                Hand handServer = new Hand();
-                handServer.addCard(d.getCard());
-                handServer.addCard(d.getCard());
-                while (handServer.getValue()<=16){
-                    handServer.addCard(d.getCard());
-                }
-                int validar= 0;
-                if (handHuman.getValue()> handServer.getValue() && handHuman.getValue() <= 21){
-                  validar=1;
-                }
-                if (handHuman.getValue()< handServer.getValue() && handServer.getValue() <= 21){
-                    validar=1;
-                }
 
-//                int casa= handServer.ganar() + validar;
-//                int humano= handHuman.ganar()+ validar;
-
-                String cartas= handHuman.toString();
+                String cartas = handHuman.toString();
                 output.format("Recibes las cartas: " + cartas + "\n");
                 output.flush();
-                cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+".\n");
+                cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+"\n");
 
 
                 while (true)
                     {
                         accionBoton = input.nextInt();
+                        String limpiar = input.nextLine();
 
                         if (accionBoton == 1)
                         {
                             handHuman.addCard(d.getCard());
 
+                            String valorCartas = Integer.toString(handHuman.getValue());
                             String cartasActualizacion = handHuman.toString();
+                            int valorVerificacion = handHuman.getValue();
+
                             output.format("Ahora tienes las cartas: " + cartasActualizacion + "\n");
                             output.flush();
-                            cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
+
+                            output.format("Esta mano tiene un valor de " + valorCartas +"\n");
+                            output.flush();
+
+                            output.format("%d\n", valorVerificacion);
+                            output.flush();
+
+//                            if (valorVerificacion > 21)
+//                            {
+//                                perder = 1;
+//                                output.format("%d\n", perder);
+//                                output.flush();
+//                            }
+//                            else
+//                            {
+//                                perder = 0;
+//                                output.format("%d\n", perder);
+//                                output.flush();
+//                                continue;
+//                            }
+
+//                            output.format("%d\n", valorVerificacion);
+//                            output.flush();
+
+                            cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+"\n");
+
                             accionBoton = 0;
                         }
 
@@ -203,7 +224,14 @@ public class BlackjackServer extends JFrame
                             cartasArea.append("El jugador número " + playerNumber + " se ha retirado"+".\n");
                             accionBoton = 0;
                         }
+                        if(accionBoton == 4)
+                        {
 
+                            accionBoton = 0;
+
+                        }
+
+                        input.reset();
 
                     }
 

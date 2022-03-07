@@ -31,7 +31,7 @@ public class BlackjackClient extends JFrame implements Runnable {
     private JButton retirarse;
     private JButton reiniciar;
     private JPanel botones;
-    private JTextField numeroJugador;
+    private JTextArea numeroJugador;
     private JTextArea display; //Muestra las cartas
     private Socket connection; //Coneccion al servidor
     private Scanner input; //Input del servidor
@@ -41,11 +41,9 @@ public class BlackjackClient extends JFrame implements Runnable {
     private final static int[] numerosJugadores = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int decision = 0;
 
-
     public BlackjackClient(String host) {
         blackjackHost = host;
-        display = new JTextArea(4, 30);
-
+        display = new JTextArea(15, 10);
         display.setEditable(false);
         add(new JScrollPane(display), BorderLayout.SOUTH);
 
@@ -53,9 +51,9 @@ public class BlackjackClient extends JFrame implements Runnable {
 
 
         pedir = new JButton("Pedir");
-        reiniciar = new JButton("Reiniciar");
+        reiniciar = new JButton("Salir");
         apostar = new JButton("Apostar");
-        retirarse = new JButton("Retirarse");
+        retirarse = new JButton("Dejar de pedir");
 
         botones.add(apostar);
         botones.add(pedir);
@@ -69,15 +67,15 @@ public class BlackjackClient extends JFrame implements Runnable {
         add(botones, BorderLayout.CENTER);
 
 
-        numeroJugador = new JTextField();
+        numeroJugador = new JTextArea(3,10);
         numeroJugador.setEditable(false);
         add(numeroJugador, BorderLayout.NORTH);
 
 
-
-
-        this.setSize(500, 500);
+        //display.setSize(300,200);
+        this.setSize(400, 500);
         setVisible(true);
+
 
         startClient();
 
@@ -103,128 +101,109 @@ public class BlackjackClient extends JFrame implements Runnable {
     }
 
     //Thread de control que permite el update del TextArea
-    public void run()
-    {
+    public void run() {
 
         numero = input.nextLine();
         String cartas = input.nextLine();
 
-        numeroJugador.setText("Eres el jugador \n" + numero + "\n");
+        numeroJugador.setText("Eres el jugador: " + numero + "\n");
         display.append(cartas + "\n");
 
-            pedir.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String actualizacionCartas;
+        pedir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String actualizacionCartas;
+                String valorCartas;
+                int valorCartasInt;
 
-                    decision = 1;
-                    output.format("%d\n", decision);
-                    output.flush();
+                decision = 1;
+                output.format("%d\n", decision);
+                output.flush();
 
-                    actualizacionCartas = input.nextLine();
+                actualizacionCartas = input.nextLine();
 
-                    display.append(actualizacionCartas + "\n");
+                display.append(actualizacionCartas + "\n");
 
-                    decision = 0;
+                valorCartas = input.nextLine();
+
+                display.append(valorCartas + "\n");
+
+                valorCartasInt = input.nextInt();
+
+                String limpiar = input.nextLine();
+
+                if (valorCartasInt > 21)
+                {
+                     apostar.setEnabled(false);
+                     pedir.setEnabled(false);
+                     retirarse.setEnabled(false);
+                     display.append("PERDISTE! \n");
+
                 }
-            });
 
-        retirarse.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+//                if (perder == 1)
+//                {
+//                     apostar.setEnabled(false);
+//                     pedir.setEnabled(false);
+//                     retirarse.setEnabled(false);
+//                     System.out.println("YA PERDIO");
+//                     display.append("PERDISTE! \n");
+//                }
+//                else
+//                {
+//                    display.append("\n");
+//                }
+//
+//                input.reset();
+                decision = 0;
+            }
+        });
 
+        //Dejar de pedir
+        retirarse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
                 decision = 2;
                 output.format("%d\n", decision);
                 output.flush();
                 decision = 0;
-                System.exit(0);
             }
         });
 
-        reiniciar.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        reiniciar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 decision = 3;
+                output.format("%d\n", decision);
+                output.flush();
+                decision = 0;
+                System.exit(1);
+            }
+        });
+
+        apostar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                decision = 4;
                 output.format("%d\n", decision);
                 output.flush();
                 decision = 0;
 
             }
         });
-
-
-//        while (true)
-//        {
-//            if (decision == 1)
-//            {
-//                String actualizacionCartas = input.nextLine();
-//
-//                display.append(actualizacionCartas + "\n");
-//
-//                decision = 0;
-//            }
-//        }
-
-
-//                        while(true)
-//                        {
-//                            if (decision == 1)
-//                            {
-//                                String actualizacionCartas = input.nextLine();
-//
-//                                display.append(actualizacionCartas + "\n");
-//                                System.out.println(actualizacionCartas);
-//                            }
-//                        }
-
-
-                    }
-
-
-
-//    private void processMessage(String message) {
-//        if (message.equals("Recibes una carta ")) {
-//            displayMessage("Carta valida: \n");
-//        } else if (message.equals("Te retiras del juego.")) {
-//            displayMessage("Te retiras del juego. \n");
-//        }
-//
-//    }
-
-
-    private void displayMessage(final String messageToDisplay) {
-        SwingUtilities.invokeLater(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        display.append(messageToDisplay);
-                    }
-                }
-        );
     }
 }
 
-    class reiniciarfuncion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
 
-
-        }
-    }
-
-
-
-    class apostarfuncion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-
-        }
-    }
-
+//    private void displayMessage(final String messageToDisplay) {
+//        SwingUtilities.invokeLater(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        display.append(messageToDisplay);
+//                    }
+//                }
+//        );
+//    }
+//}
 
 

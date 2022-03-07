@@ -31,8 +31,8 @@ public class Hand {
                 ace=true;
             val += cardValue;
         }
-        if (ace== true && val + 10 <= 21)
-            val= val +10;
+        if (ace == true && val + 10 <= 21)
+            val = val +10;
         return val;
 
     }
