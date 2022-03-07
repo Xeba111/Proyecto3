@@ -38,7 +38,6 @@ public class BlackjackClient extends JFrame implements Runnable {
     private Formatter output; //output para el servidor
     private String blackjackHost; //nombre para el servidor host
     private String numero; //numero de este jugador
-    private boolean myTurn; //determina de quién es el turno
     private final static int[] numerosJugadores = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 
@@ -123,10 +122,10 @@ public class BlackjackClient extends JFrame implements Runnable {
                                 output.format("%d\n", decision);
                                 output.flush();
 
-                                String cartas = input.nextLine();
+                                String actualizacionCartas = input.nextLine();
 
-                                display.setText(cartas + "\n");
-                                System.out.println(cartas);
+                                display.setText(actualizacionCartas + "\n");
+                                System.out.println(actualizacionCartas);
 
                             }
                         });
@@ -136,7 +135,6 @@ public class BlackjackClient extends JFrame implements Runnable {
                 }
         );
 
-        myTurn = (numero.equals(String.valueOf(numerosJugadores[Integer.parseInt(numero)])));
 
         while (true) {
             if (input.hasNextLine())
@@ -147,7 +145,6 @@ public class BlackjackClient extends JFrame implements Runnable {
     private void processMessage(String message) {
         if (message.equals("Recibes una carta ")) {
             displayMessage("Carta valida: \n");
-            myTurn = true;
         } else if (message.equals("Te retiras del juego.")) {
             displayMessage("Te retiras del juego. \n");
         }

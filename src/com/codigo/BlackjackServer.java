@@ -24,7 +24,6 @@ public class BlackjackServer extends JFrame
     private JTextArea cartasArea;
     private Player[] players ;
     private ServerSocket server;
-    private int currentPlayer;
     private ExecutorService runGame;
     private Lock gameLock;
     private final static int[] numerosJugadores = {0,1,2,3,4,5,6,7,8,9};
@@ -39,8 +38,6 @@ public class BlackjackServer extends JFrame
         runGame = Executors.newFixedThreadPool(10);
         gameLock = new ReentrantLock();
         players = new Player[10];
-
-        currentPlayer = 0;
 
         try
         {
@@ -89,15 +86,6 @@ public class BlackjackServer extends JFrame
 
         gameLock.lock();
 
-        try
-        {
-            players[numerosJugadores[0]].setSuspended(false);
-
-        }
-        finally
-        {
-            gameLock.unlock();
-        }
     }
     
     private void displayMessage(final String messageToDisplay)
@@ -159,8 +147,6 @@ public class BlackjackServer extends JFrame
                 output.format("%s\n", playerNumber);
                 output.flush();
 
-//                if(playerNumber == 1 || playerNumber == 2)
-//                {
                 Deck d= new Deck();
                 d.createCards();
                 Hand handHuman = new Hand();
@@ -190,7 +176,6 @@ public class BlackjackServer extends JFrame
                     output.flush();
                     cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+".\n");
 
-                    gameLock.lock();
 
                     while (true)
                     {
@@ -200,7 +185,7 @@ public class BlackjackServer extends JFrame
                         {
                             handHuman.addCard(d.getCard());
                             cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
-                            cartas= handHuman.toString();
+                            cartas = handHuman.toString();
                             output.format("Recibes las cartas: " + cartas + "\n");
                             output.flush();
                         }
@@ -221,14 +206,6 @@ public class BlackjackServer extends JFrame
             }
 
         }
-
-        public void setSuspended(boolean status)
-        {
-            suspended = status;
-        }
-
-
-
 
 
     }
