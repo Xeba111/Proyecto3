@@ -39,6 +39,7 @@ public class BlackjackClient extends JFrame implements Runnable {
     private String blackjackHost; //nombre para el servidor host
     private String numero; //numero de este jugador
     private final static int[] numerosJugadores = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int decision = 0;
 
 
     public BlackjackClient(String host) {
@@ -104,56 +105,73 @@ public class BlackjackClient extends JFrame implements Runnable {
     }
 
     //Thread de control que permite el update del TextArea
-    public void run() {
+    public void run()
+    {
+
         numero = input.nextLine();
-
         String cartas = input.nextLine();
-        SwingUtilities.invokeLater(
-                new Runnable() {
-                    @Override
-                    public void run() {
 
-                        numeroJugador.setText("Eres el jugador \n" + numero + "\n");
-                        display.setText(cartas + "\n");
-                        pedir.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                int decision = 1;
-                                output.format("%d\n", decision);
-                                output.flush();
+        numeroJugador.setText("Eres el jugador \n" + numero + "\n");
+        display.append(cartas + "\n");
 
-                                String actualizacionCartas = input.nextLine();
+            pedir.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String actualizacionCartas;
 
-                                display.setText(actualizacionCartas + "\n");
-                                System.out.println(actualizacionCartas);
+                    decision = 1;
+                    output.format("%d\n", decision);
+                    output.flush();
 
-                            }
 
-                        });
-                        retirarse.addActionListener(new retirarsefuncion());
-                        apostar.addActionListener(new apostarfuncion());
-                        reiniciar.addActionListener(new reiniciarfuncion());
+
+                        actualizacionCartas = input.nextLine();
+
+                        display.append(actualizacionCartas + "\n");
+
+                        decision = 0;
+
+                }
+            });
+
+
+//        while (true)
+//        {
+//            if (decision == 1)
+//            {
+//                String actualizacionCartas = input.nextLine();
+//
+//                display.append(actualizacionCartas + "\n");
+//
+//                decision = 0;
+//            }
+//        }
+
+
+//                        while(true)
+//                        {
+//                            if (decision == 1)
+//                            {
+//                                String actualizacionCartas = input.nextLine();
+//
+//                                display.append(actualizacionCartas + "\n");
+//                                System.out.println(actualizacionCartas);
+//                            }
+//                        }
 
 
                     }
-                }
-        );
 
 
-        while (true) {
-            if (input.hasNextLine())
-                processMessage(input.nextLine());
-        }
-    }
 
-    private void processMessage(String message) {
-        if (message.equals("Recibes una carta ")) {
-            displayMessage("Carta valida: \n");
-        } else if (message.equals("Te retiras del juego.")) {
-            displayMessage("Te retiras del juego. \n");
-        }
-
-    }
+//    private void processMessage(String message) {
+//        if (message.equals("Recibes una carta ")) {
+//            displayMessage("Carta valida: \n");
+//        } else if (message.equals("Te retiras del juego.")) {
+//            displayMessage("Te retiras del juego. \n");
+//        }
+//
+//    }
 
 
     private void displayMessage(final String messageToDisplay) {
@@ -171,7 +189,6 @@ public class BlackjackClient extends JFrame implements Runnable {
     class reiniciarfuncion implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.exit(0);
 
 
         }
