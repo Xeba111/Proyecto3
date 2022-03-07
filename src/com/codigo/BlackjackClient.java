@@ -128,7 +128,11 @@ public class BlackjackClient extends JFrame implements Runnable {
                                 System.out.println(actualizacionCartas);
 
                             }
+
                         });
+                        retirarse.addActionListener(new retirarsefuncion());
+                        apostar.addActionListener(new apostarfuncion());
+                        reiniciar.addActionListener(new reiniciarfuncion());
 
 
                     }
@@ -167,6 +171,7 @@ public class BlackjackClient extends JFrame implements Runnable {
     class reiniciarfuncion implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            System.exit(0);
 
 
         }
