@@ -194,7 +194,13 @@ public class BlackjackServer extends JFrame
 
                         if(accionBoton == 2)
                         {
-                            cartasArea.append("Boton 2 ha sido presionado por el jugador número " + playerNumber + ".\n");
+                            cartasArea.append("El jugador número " + playerNumber + " se ha retirado"+".\n");
+                            accionBoton = 0;
+                        }
+                        if(accionBoton == 3)
+                        {
+                            d.createCards();
+                            cartasArea.append("El jugador número " + playerNumber + " se ha retirado"+".\n");
                             accionBoton = 0;
                         }
 

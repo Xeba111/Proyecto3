@@ -74,9 +74,7 @@ public class BlackjackClient extends JFrame implements Runnable {
         add(numeroJugador, BorderLayout.NORTH);
 
 
-        retirarse.addActionListener(new retirarsefuncion());
-        apostar.addActionListener(new apostarfuncion());
-        reiniciar.addActionListener(new reiniciarfuncion());
+
 
         this.setSize(500, 500);
         setVisible(true);
@@ -134,16 +132,27 @@ public class BlackjackClient extends JFrame implements Runnable {
 
         retirarse.addActionListener(new ActionListener()
         {
-            @Override
             public void actionPerformed(ActionEvent e)
             {
+
+
                 decision = 2;
                 output.format("%d\n", decision);
                 output.flush();
-
-                display.append("El boton de retirarse ha sido presionado por el jugador número " + numero + ".\n");
-
                 decision = 0;
+                System.exit(0);
+            }
+        });
+
+        reiniciar.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                decision = 3;
+                output.format("%d\n", decision);
+                output.flush();
+                decision = 0;
+
             }
         });
 
@@ -217,11 +226,5 @@ public class BlackjackClient extends JFrame implements Runnable {
         }
     }
 
-    class retirarsefuncion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
 
-
-        }
-    }
 
