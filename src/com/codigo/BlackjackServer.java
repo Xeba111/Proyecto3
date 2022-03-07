@@ -168,13 +168,14 @@ public class BlackjackServer extends JFrame
                     validar=1;
                 }
 
-                int casa= handServer.ganar() + validar;
-                int humano= handHuman.ganar()+ validar;
+//                int casa= handServer.ganar() + validar;
+//                int humano= handHuman.ganar()+ validar;
 
                 String cartas= handHuman.toString();
                 output.format("Recibes las cartas: " + cartas + "\n");
                 output.flush();
                 cartasArea.append("El jugador " + playerNumber + " recibe las cartas: " + handHuman.toString()+".\n");
+
 
                 while (true)
                     {
@@ -188,7 +189,16 @@ public class BlackjackServer extends JFrame
                             output.format("Ahora tienes las cartas: " + cartasActualizacion + "\n");
                             output.flush();
                             cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
+                            accionBoton = 0;
                         }
+
+                        if(accionBoton == 2)
+                        {
+                            cartasArea.append("Boton 2 ha sido presionado por el jugador número " + playerNumber + ".\n");
+                            accionBoton = 0;
+                        }
+
+
                     }
 
             }
