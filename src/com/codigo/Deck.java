@@ -26,15 +26,20 @@ public class Deck {
     private void shuffleCards(){
         Collections.shuffle(Arrays.asList(this.cards));
 
+
     }
     public Card getCard(){
         if(position==51){
             System.out.println("No hay mas cartas para repartir");
             return null;
         }
+        if (position > 26){
+            shuffleCards();
+        }
         Card tempCard = this.cards[position];
         position++;
         return tempCard;
+
     }
 
 }

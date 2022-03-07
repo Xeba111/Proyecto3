@@ -1,10 +1,13 @@
 package com.codigo;
 
 import java.awt.BorderLayout;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 import java.util.Formatter;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +18,9 @@ import java.util.concurrent.locks.Condition;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 
 public class BlackjackServer extends JFrame
@@ -55,7 +61,6 @@ public class BlackjackServer extends JFrame
         try
         {
             server = new ServerSocket(8008);
-
         }
         catch (IOException ioException)
         {
@@ -124,14 +129,7 @@ public class BlackjackServer extends JFrame
         );
     }
 
-    private static String getRandom(String[] array, String[] used, int numberUsed)
-    {
-        int random = new Random().nextInt(array.length);
-        used[numberUsed] = array[random];
-        numberUsed += 1;
-        return array[random];
 
-    }
 
     private class Player implements Runnable
     {
@@ -207,12 +205,7 @@ public class BlackjackServer extends JFrame
 
                     output.format("Otro jugador se ha conectado. Tu turno: \n");
                     output.flush();
-                //}
-//
-//                while(!isGameOver())
-//                {
-//
-//                }
+
 
             }
             finally
@@ -228,10 +221,7 @@ public class BlackjackServer extends JFrame
                 }
             }
 
-            if (connection.isConnected())
-            {
-                outputArea.append("El jugador " + playerNumber + " se ha retirado. \n");
-            }
+
         }
 
         public void setSuspended(boolean status)
