@@ -19,10 +19,7 @@ import javax.swing.SwingUtilities;
 
 public class BlackjackServer extends JFrame
 {
-    private String[] deck = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
-    ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
-    ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"
-    ,"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+
     private JTextArea outputArea;
     private JTextArea cartasArea;
     private Player[] players ;
@@ -30,8 +27,6 @@ public class BlackjackServer extends JFrame
     private int currentPlayer;
     private ExecutorService runGame;
     private Lock gameLock;
-    private Condition otherPlayerConnected;
-    private Condition otherPlayerTurn;
     private final static int[] numerosJugadores = {0,1,2,3,4,5,6,7,8,9};
     private final static String[] numeroJugadoreString = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     private String[] usedCards = new String[20];
@@ -43,11 +38,6 @@ public class BlackjackServer extends JFrame
 
         runGame = Executors.newFixedThreadPool(10);
         gameLock = new ReentrantLock();
-
-        otherPlayerConnected = gameLock.newCondition();
-
-        otherPlayerTurn = gameLock.newCondition();
-
         players = new Player[10];
 
         currentPlayer = 0;
@@ -102,7 +92,7 @@ public class BlackjackServer extends JFrame
         try
         {
             players[numerosJugadores[0]].setSuspended(false);
-            otherPlayerConnected.signal();
+
         }
         finally
         {
@@ -159,13 +149,7 @@ public class BlackjackServer extends JFrame
             }
         }
 
-        //Muestra mensaje de que otro jugador hizo su jugada
-        public void otherPlayerMoved(String carta)
-        {
-            output.format("El oponente obtuvo la carta: \n");
-            output.format("%d\n", carta);
-            output.flush();
-        }
+
 
         public void run()
         {
@@ -183,6 +167,24 @@ public class BlackjackServer extends JFrame
 
                 handHuman.addCard(d.getCard());
                 handHuman.addCard(d.getCard());
+
+                Hand handServer = new Hand();
+                handServer.addCard(d.getCard());
+                handServer.addCard(d.getCard());
+                while (handServer.getValue()<=16){
+                    handServer.addCard(d.getCard());
+                }
+                int validar= 0;
+                if (handHuman.getValue()> handServer.getValue() && handHuman.getValue() <= 21){
+                  validar=1;
+                }
+                if (handHuman.getValue()< handServer.getValue() && handServer.getValue() <= 21){
+                    validar=1;
+                }
+
+                int casa= handServer.ganar() + validar;
+                int humano= handHuman.ganar()+ validar;
+
                 String cartas= handHuman.toString();
                 output.format("Recibes las cartas: " + cartas + "\n");
                     output.flush();

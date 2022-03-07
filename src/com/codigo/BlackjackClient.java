@@ -73,7 +73,7 @@ public class BlackjackClient extends JFrame implements Runnable {
         numeroJugador.setEditable(false);
         add(numeroJugador, BorderLayout.NORTH);
 
-        pedir.addActionListener(new pedirfuncion());
+
         retirarse.addActionListener(new retirarsefuncion());
         apostar.addActionListener(new apostarfuncion());
         reiniciar.addActionListener(new reiniciarfuncion());
@@ -127,15 +127,6 @@ public class BlackjackClient extends JFrame implements Runnable {
 
                                 display.setText(cartas + "\n");
                                 System.out.println(cartas);
-//                                if (handHuman.getValue() == 21) {
-//                                    display.setText("Ganaste esta partida" + "\n");
-//                                    // aqui iria la sumatoria de lo que gana la apuesta
-//                                }
-//                                if (handHuman.getValue() > 21) {
-//                                    display.setText("Perdiste esta partida" + "\n");
-//                                    // cosa de apuestas
-//                                }
-
 
                             }
                         });
@@ -184,13 +175,7 @@ public class BlackjackClient extends JFrame implements Runnable {
         }
     }
 
-    class pedirfuncion implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
 
-
-        }
-    }
 
     class apostarfuncion implements ActionListener {
         @Override

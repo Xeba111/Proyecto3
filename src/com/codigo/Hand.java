@@ -36,5 +36,18 @@ public class Hand {
         return val;
 
     }
+    public int ganar() {
+        int validar = 0;
+
+        if (getValue() == 21) {
+            validar = 1;
+        }
+
+        if (getValue() > 21) {
+            validar = 0;
+        }
+        return validar;
+    }
+
 
 }
