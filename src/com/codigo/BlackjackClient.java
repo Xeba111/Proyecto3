@@ -144,6 +144,14 @@ public class BlackjackClient extends JFrame implements Runnable {
                         retirarse.setEnabled(false);
                         display.append("PERDISTE! \n");
                         anuncio = 1;
+                        output.format("%d\n", anuncio);
+                        output.flush();
+                    }
+                    else
+                    {
+                        anuncio = 0;
+                        output.format("%d\n", anuncio);
+                        output.flush();
                     }
 
                     decision = 0;

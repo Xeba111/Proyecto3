@@ -181,6 +181,7 @@ public class BlackjackServer extends JFrame
                             String valorCartas = Integer.toString(handHuman.getValue());
                             String cartasActualizacion = handHuman.toString();
                             int valorVerificacion = handHuman.getValue();
+                            int anuncio;
 
                             output.format("Ahora tienes las cartas: " + cartasActualizacion + "\n");
                             output.flush();
@@ -192,6 +193,19 @@ public class BlackjackServer extends JFrame
                             output.flush();
 
                             cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+"\n");
+
+                            anuncio = input.nextInt();
+                            String limpiar = input.toString();
+
+                            if(anuncio == 1)
+                            {
+                                cartasArea.append("El jugador número " + playerNumber + " pierde por BUST!\n");
+                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta + "\n");
+                            }
+                            else if (anuncio == 0)
+                            {
+                                cartasArea.append("");
+                            }
 
                             accionBoton = 0;
                         }
@@ -222,17 +236,17 @@ public class BlackjackServer extends JFrame
                             if(valorServer > 21)
                             {
                                 cartasArea.append("La casa pierde por BUST!\n");
-                                cartasArea.append("El jugador número " + playerNumber + " ha ganado un total de " + apuesta);
+                                cartasArea.append("El jugador número " + playerNumber + " ha ganado un total de " + apuesta + "\n");
                             }
                             else if(valorHumano > 21 && valorServer < 21)
                             {
                                 cartasArea.append("El jugador número " + playerNumber + " pierde por BUST!\n");
-                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta);
+                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta + "\n");
                             }
                             else if(valorServer > valorHumano)
                             {
                                 cartasArea.append("El jugador número " + playerNumber + " pierde ante el server!\n");
-                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta);
+                                cartasArea.append("El jugador número " + playerNumber + " ha perdido un total de " + apuesta + "\n");
                             }
 
 
