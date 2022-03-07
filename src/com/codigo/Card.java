@@ -19,8 +19,8 @@ public class Card {
     public char getType(){return this.type;}
 
     public  int getValue(){
-
-         if(this.symbol=='J') return 11;
+        if (this.symbol=='T') return 10;
+        else  if(this.symbol=='J') return 11;
         else if(this.symbol=='Q') return 12;
         else if(this.symbol=='K') return 13;
         else if(this.symbol=='A') return 1;
