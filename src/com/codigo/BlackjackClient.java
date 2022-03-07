@@ -119,22 +119,22 @@ public class BlackjackClient extends JFrame implements Runnable {
                         pedir.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                Deck d = new Deck();
+                                int decision = 1;
+                                output.format("%d\n", decision);
+                                output.flush();
 
-                                Hand handHuman = new Hand();
-
-                                handHuman.addCard(d.getCard());
+                                String cartas = input.nextLine();
 
                                 display.setText(cartas + "\n");
                                 System.out.println(cartas);
-                                if (handHuman.getValue() == 21) {
-                                    display.setText("Ganaste esta partida" + "\n");
-                                    // aqui iria la sumatoria de lo que gana la apuesta
-                                }
-                                if (handHuman.getValue() > 21) {
-                                    display.setText("Perdiste esta partida" + "\n");
-                                    // cosa de apuestas
-                                }
+//                                if (handHuman.getValue() == 21) {
+//                                    display.setText("Ganaste esta partida" + "\n");
+//                                    // aqui iria la sumatoria de lo que gana la apuesta
+//                                }
+//                                if (handHuman.getValue() > 21) {
+//                                    display.setText("Perdiste esta partida" + "\n");
+//                                    // cosa de apuestas
+//                                }
 
 
                             }

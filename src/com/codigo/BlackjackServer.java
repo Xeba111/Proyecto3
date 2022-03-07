@@ -135,6 +135,7 @@ public class BlackjackServer extends JFrame
 
     private class Player implements Runnable
     {
+        private int accionBoton = 0;
         private Socket connection;
         private Scanner input;
         private Formatter output;
@@ -189,30 +190,19 @@ public class BlackjackServer extends JFrame
 
                     gameLock.lock();
 
-                    try
+                    while (true)
                     {
-                        while (suspended)
+                        accionBoton = input.nextInt();
+
+                        if (accionBoton == 1)
                         {
-                            otherPlayerConnected.await();
+                            handHuman.addCard(d.getCard());
+                            cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
+                            cartas= handHuman.toString();
+                            output.format("Recibes las cartas: " + cartas + "\n");
+                            output.flush();
                         }
                     }
-                    catch (InterruptedException exception)
-                    {
-                        exception.printStackTrace();
-                    }
-                    finally
-                    {
-                        gameLock.unlock();
-                    }
-
-                    output.format("Otro jugador se ha conectado. Tu turno: \n");
-                    output.flush();
-                //}
-//
-//                while(!isGameOver())
-//                {
-//
-//                }
 
             }
             finally
@@ -228,10 +218,6 @@ public class BlackjackServer extends JFrame
                 }
             }
 
-            if (connection.isConnected())
-            {
-                outputArea.append("El jugador " + playerNumber + " se ha retirado. \n");
-            }
         }
 
         public void setSuspended(boolean status)
