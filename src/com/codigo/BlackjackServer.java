@@ -1,13 +1,10 @@
 package com.codigo;
 
 import java.awt.BorderLayout;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 import java.util.Formatter;
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -18,9 +15,6 @@ import java.util.concurrent.locks.Condition;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import java.io.*;
-import java.net.*;
-import java.util.*;
 
 
 public class BlackjackServer extends JFrame
@@ -61,6 +55,7 @@ public class BlackjackServer extends JFrame
         try
         {
             server = new ServerSocket(8008);
+
         }
         catch (IOException ioException)
         {
@@ -129,10 +124,18 @@ public class BlackjackServer extends JFrame
         );
     }
 
+    private static String getRandom(String[] array, String[] used, int numberUsed)
+    {
+        int random = new Random().nextInt(array.length);
+        used[numberUsed] = array[random];
+        numberUsed += 1;
+        return array[random];
 
+    }
 
     private class Player implements Runnable
     {
+        private int accionBoton = 0;
         private Socket connection;
         private Scanner input;
         private Formatter output;
@@ -187,25 +190,19 @@ public class BlackjackServer extends JFrame
 
                     gameLock.lock();
 
-                    try
+                    while (true)
                     {
-                        while (suspended)
+                        accionBoton = input.nextInt();
+
+                        if (accionBoton == 1)
                         {
-                            otherPlayerConnected.await();
+                            handHuman.addCard(d.getCard());
+                            cartasArea.append("El jugador " + playerNumber + " tiene las cartas: " + handHuman.toString()+".\n");
+                            cartas= handHuman.toString();
+                            output.format("Recibes las cartas: " + cartas + "\n");
+                            output.flush();
                         }
                     }
-                    catch (InterruptedException exception)
-                    {
-                        exception.printStackTrace();
-                    }
-                    finally
-                    {
-                        gameLock.unlock();
-                    }
-
-                    output.format("Otro jugador se ha conectado. Tu turno: \n");
-                    output.flush();
-
 
             }
             finally
@@ -220,7 +217,6 @@ public class BlackjackServer extends JFrame
                     System.exit(1);
                 }
             }
-
 
         }
 
